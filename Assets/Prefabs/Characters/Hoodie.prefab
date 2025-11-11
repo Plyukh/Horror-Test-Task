@@ -401,7 +401,7 @@ GameObject:
   - component: {fileID: 1917822775004306179}
   - component: {fileID: 4052029450366339974}
   - component: {fileID: 4431906469759312075}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Hoodie
   m_TagString: Untagged
   m_Icon: {fileID: 0}

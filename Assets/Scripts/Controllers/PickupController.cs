@@ -58,6 +58,7 @@ public class PickupController : MonoBehaviour
     private Rigidbody heldRigidbody;
     private Collider[] heldColliders;
     private Coroutine moveCoroutine;
+    private Coroutine additionalItemMoveCoroutine;
 
     // Public API
     public bool IsHolding() => heldObject != null;
@@ -425,11 +426,108 @@ public class PickupController : MonoBehaviour
         
         if (requiredItem != null && targetPosition != null && hoveredItem.Id == requiredItem.Id)
         {
-            Pickup(hoveredItem.gameObject, targetPosition.transform);
+            AttachAdditionalItemToHeldObject(hoveredItem.gameObject, targetPosition.transform);
             return true;
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// Прикрепляет дополнительный предмет к текущему heldObject без изменения самого heldObject
+    /// </summary>
+    private void AttachAdditionalItemToHeldObject(GameObject additionalObject, Transform targetParent)
+    {
+        if (additionalObject == null || targetParent == null || heldObject == null) return;
+
+        // Сохраняем текущий heldObject
+        GameObject originalHeldObject = heldObject;
+        Item originalHeldItem = heldItem;
+        Rigidbody originalHeldRigidbody = heldRigidbody;
+        Collider[] originalHeldColliders = heldColliders;
+
+        // Временно сохраняем состояние дополнительного предмета
+        Rigidbody additionalRb = additionalObject.GetComponent<Rigidbody>();
+        Collider[] additionalColliders = additionalObject.GetComponentsInChildren<Collider>();
+        Item additionalItem = additionalObject.GetComponent<Item>();
+
+        // Настраиваем физику дополнительного предмета
+        if (additionalRb != null && setKinematicOnPickup)
+        {
+            additionalRb.linearVelocity = Vector3.zero;
+            additionalRb.angularVelocity = Vector3.zero;
+            additionalRb.isKinematic = true;
+        }
+
+        if (disableCollidersOnPickup && additionalColliders != null)
+        {
+            foreach (var collider in additionalColliders)
+            {
+                if (collider != null)
+                {
+                    collider.enabled = false;
+                }
+            }
+        }
+
+        // Убираем outline с дополнительного предмета
+        OutlineHelper.SetOutlineWidthRecursive(additionalObject, defaultOutlineWidth);
+
+        // Прикрепляем к целевому родителю
+        if (pickupDuration <= MIN_PICKUP_DURATION)
+        {
+            additionalObject.transform.SetParent(targetParent, false);
+            additionalObject.transform.localPosition = Vector3.zero;
+            additionalObject.transform.localRotation = Quaternion.identity;
+            OnPickupComplete();
+        }
+        else
+        {
+            // Анимация прикрепления (используем отдельную корутин для дополнительных предметов)
+            if (additionalItemMoveCoroutine != null)
+            {
+                StopCoroutine(additionalItemMoveCoroutine);
+            }
+            additionalItemMoveCoroutine = StartCoroutine(AttachAdditionalItemCoroutine(additionalObject.transform, targetParent));
+        }
+
+        // Восстанавливаем исходное состояние heldObject
+        heldObject = originalHeldObject;
+        heldItem = originalHeldItem;
+        heldRigidbody = originalHeldRigidbody;
+        heldColliders = originalHeldColliders;
+
+        // Проигрываем звук
+        PlayPickupSound();
+    }
+
+    private IEnumerator AttachAdditionalItemCoroutine(Transform additionalItemTransform, Transform targetParent)
+    {
+        Vector3 startPos = additionalItemTransform.position;
+        Quaternion startRot = additionalItemTransform.rotation;
+        Vector3 targetWorldPos = targetParent.TransformPoint(Vector3.zero);
+        Quaternion targetWorldRot = targetParent.rotation;
+
+        float elapsedTime = 0f;
+        while (elapsedTime < pickupDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float normalizedTime = Mathf.Clamp01(elapsedTime / pickupDuration);
+            float curveValue = pickupCurve.Evaluate(normalizedTime);
+            
+            additionalItemTransform.position = Vector3.LerpUnclamped(startPos, targetWorldPos, curveValue);
+            additionalItemTransform.rotation = Quaternion.Slerp(startRot, targetWorldRot, curveValue);
+            
+            yield return null;
+        }
+
+        additionalItemTransform.SetParent(targetParent, false);
+        additionalItemTransform.localPosition = Vector3.zero;
+        additionalItemTransform.localRotation = Quaternion.identity;
+
+        OnPickupComplete();
+
+        additionalItemMoveCoroutine = null;
     }
 
     public void Pickup(GameObject target)
