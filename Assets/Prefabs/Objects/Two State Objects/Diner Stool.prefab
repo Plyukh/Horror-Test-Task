@@ -1,0 +1,198 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4477263223792989399
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4408026621103405487}
+  - component: {fileID: 4801734903452916667}
+  m_Layer: 0
+  m_Name: Diner Stool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4408026621103405487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4477263223792989399}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1259327382943801779}
+  - {fileID: 6658081426616303683}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4801734903452916667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4477263223792989399}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d84532858be34a4cb66fc421b433cf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objects:
+  - {fileID: 6901209787272427157}
+  - {fileID: 1180996652288511553}
+  startState: 0
+--- !u!1001 &2093305626003750144
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4408026621103405487}
+    m_Modifications:
+    - target: {fileID: 898166813841300659, guid: 9e41f535a3e264f4292547ddea38bb61, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 898166813841300659, guid: 9e41f535a3e264f4292547ddea38bb61, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 898166813841300659, guid: 9e41f535a3e264f4292547ddea38bb61, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 898166813841300659, guid: 9e41f535a3e264f4292547ddea38bb61, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 898166813841300659, guid: 9e41f535a3e264f4292547ddea38bb61, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 898166813841300659, guid: 9e41f535a3e264f4292547ddea38bb61, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 898166813841300659, guid: 9e41f535a3e264f4292547ddea38bb61, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 898166813841300659, guid: 9e41f535a3e264f4292547ddea38bb61, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 898166813841300659, guid: 9e41f535a3e264f4292547ddea38bb61, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 898166813841300659, guid: 9e41f535a3e264f4292547ddea38bb61, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1157128710024593472, guid: 9e41f535a3e264f4292547ddea38bb61, type: 3}
+      propertyPath: m_Name
+      value: Diner Stool Broken
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9e41f535a3e264f4292547ddea38bb61, type: 3}
+--- !u!4 &1259327382943801779 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 898166813841300659, guid: 9e41f535a3e264f4292547ddea38bb61, type: 3}
+  m_PrefabInstance: {fileID: 2093305626003750144}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6901209787272427157 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4812922882228603797, guid: 9e41f535a3e264f4292547ddea38bb61, type: 3}
+  m_PrefabInstance: {fileID: 2093305626003750144}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f3ee68aa1b4856458f99ae96878d2ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &4739919051875970084
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 4408026621103405487}
+    m_Modifications:
+    - target: {fileID: 2135219195883498599, guid: f482d1204731d5a43a37c32fd9ab51cb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2135219195883498599, guid: f482d1204731d5a43a37c32fd9ab51cb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2135219195883498599, guid: f482d1204731d5a43a37c32fd9ab51cb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2135219195883498599, guid: f482d1204731d5a43a37c32fd9ab51cb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2135219195883498599, guid: f482d1204731d5a43a37c32fd9ab51cb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2135219195883498599, guid: f482d1204731d5a43a37c32fd9ab51cb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2135219195883498599, guid: f482d1204731d5a43a37c32fd9ab51cb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2135219195883498599, guid: f482d1204731d5a43a37c32fd9ab51cb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2135219195883498599, guid: f482d1204731d5a43a37c32fd9ab51cb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2135219195883498599, guid: f482d1204731d5a43a37c32fd9ab51cb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8607494465243220140, guid: f482d1204731d5a43a37c32fd9ab51cb, type: 3}
+      propertyPath: m_Name
+      value: Diner Stool Normal
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f482d1204731d5a43a37c32fd9ab51cb, type: 3}
+--- !u!114 &1180996652288511553 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5882876976669745765, guid: f482d1204731d5a43a37c32fd9ab51cb, type: 3}
+  m_PrefabInstance: {fileID: 4739919051875970084}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f3ee68aa1b4856458f99ae96878d2ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &6658081426616303683 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2135219195883498599, guid: f482d1204731d5a43a37c32fd9ab51cb, type: 3}
+  m_PrefabInstance: {fileID: 4739919051875970084}
+  m_PrefabAsset: {fileID: 0}
