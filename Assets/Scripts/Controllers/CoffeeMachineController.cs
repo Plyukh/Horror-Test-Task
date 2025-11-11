@@ -165,6 +165,7 @@ public class CoffeeMachineController : BaseItemReceiverController
     {
         if (currentCupAnimator == null || isCooking) yield break;
 
+        CompleteQuestIfNeeded();
         isCooking = true;
         canInteract = false;
 

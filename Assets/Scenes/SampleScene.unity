@@ -471,6 +471,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4176410186140992, guid: e6ad818f73011bb42ac5c5e629434bcc, type: 3}
   m_PrefabInstance: {fileID: 42889367}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &43909749 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 296594346793498884, guid: 46a778d11dcd75749a647732a0d3bb44, type: 3}
+  m_PrefabInstance: {fileID: 609404400}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a69b63437ffdb242bcb4819bf64d79d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &45423934
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5923,6 +5934,22 @@ MonoBehaviour:
           m_CallState: 2
   - description: "\u2022 \u041E\u0442\u0434\u0430\u0442\u044C \u043A\u043E\u0444\u0435
       \u043A\u043B\u0438\u0435\u043D\u0442\u0443"
+    onComplete:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 43909749}
+          m_TargetAssemblyTypeName: DoorController, Assembly-CSharp
+          m_MethodName: Unlock
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - description: "\u2022 \u0412\u043A\u043B\u044E\u0447\u0438\u0442\u044C \u0433\u0435\u043D\u0435\u0440\u0430\u0442\u043E\u0440"
     onComplete:
       m_PersistentCalls:
         m_Calls: []
@@ -31334,6 +31361,7 @@ MonoBehaviour:
   audioSource: {fileID: 543450653259943384}
   placeClip: {fileID: 8300000, guid: ef3be14e921ddb842865f8e374780ad9, type: 3}
   cookingClip: {fileID: 8300000, guid: b090405e9018bba46862ae23079767b5, type: 3}
+  outline: {fileID: 543450653259943385}
 --- !u!82 &543450653259943384
 AudioSource:
   m_ObjectHideFlags: 0
@@ -35289,7 +35317,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4639568708191597410, guid: 720b3f7403e6c994baa3ffc9e8ea7b02, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.71599996
+      value: -0.753
       objectReference: {fileID: 0}
     - target: {fileID: 4639568708191597410, guid: 720b3f7403e6c994baa3ffc9e8ea7b02, type: 3}
       propertyPath: m_LocalRotation.w
@@ -36961,7 +36989,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
@@ -37934,6 +37962,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1712337115}
     m_Modifications:
+    - target: {fileID: 367188091851686672, guid: 0eda145c9c9bb4a4580228444d68c0fc, type: 3}
+      propertyPath: completeCurrentQuest
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 398957628138728939, guid: 0eda145c9c9bb4a4580228444d68c0fc, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
