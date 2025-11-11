@@ -102,6 +102,12 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
+# Ignore AssetBundles folder and specific large asset
+/Assets/AssetBundles/*
+/Assets/AssetBundles/*.meta
+/Assets/AssetBundles/sceneassetbundle
+/Assets/AssetBundles/sceneassetbundle.meta
+
 ### Windows ###
 # Windows thumbnail cache files
 Thumbs.db
@@ -127,3 +133,9 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Ignore Unity lighting data files (large)
+**/Scenes/**/LightingData.asset
+**/Scenes/**/LightingData.asset.meta
+**/LightingData.asset
+**/LightingData.asset.me
