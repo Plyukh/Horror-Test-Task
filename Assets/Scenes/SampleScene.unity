@@ -6752,6 +6752,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
+        - m_Target: {fileID: 5733246968451823007}
+          m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+          m_MethodName: SetActive
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 10
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - description: "\u2022 \u0412\u0437\u044F\u0442\u044C \u0441\u0442\u0430\u043A\u0430\u043D\u0447\u0438\u043A"
     onComplete:
       m_PersistentCalls:
@@ -38609,6 +38621,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 699000075055386552, guid: f6fa24ecbce108e40a2a0c8c2885f9bb, type: 3}
       propertyPath: startsLocked
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 699000075055386552, guid: f6fa24ecbce108e40a2a0c8c2885f9bb, type: 3}
+      propertyPath: completeCurrentQuest
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3399846561083333404, guid: f6fa24ecbce108e40a2a0c8c2885f9bb, type: 3}
