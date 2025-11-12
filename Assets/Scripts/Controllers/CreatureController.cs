@@ -4,12 +4,9 @@ using UnityEngine.AI;
 /// <summary>
 /// Контроллер существа, которое преследует игрока
 /// </summary>
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class CreatureController : MonoBehaviour
 {
-    private const float MIN_DISTANCE_TO_PLAYER = 0.5f;
-    private const float GROUNDED_STICK = -1f;
-
     [Header("References")]
     [Tooltip("Игрок, за которым будет гнаться существо. Если не назначен, будет искаться автоматически.")]
     [SerializeField] private Transform playerTarget;
@@ -38,6 +35,8 @@ public class CreatureController : MonoBehaviour
     [SerializeField] private float stopDistance = 1.5f;
     [Tooltip("Дистанция обнаружения игрока (для автоматического переключения в режим преследования)")]
     [SerializeField] private float detectionDistance = 10f;
+    [Tooltip("Как часто обновлять путь к игроку (в секундах)")]
+    [SerializeField] private float pathUpdateInterval = 0.5f;
 
     [Header("Audio")]
     [Tooltip("Звук при переходе в режим преследования")]
@@ -48,13 +47,38 @@ public class CreatureController : MonoBehaviour
     [SerializeField] private AudioClip movementLoopClip;
 
     private CreatureState currentState;
-    private float verticalVelocity = 0f;
     private Vector3 lastKnownPlayerPosition;
+    private float pathUpdateTimer = 0f;
 
     // Public API
     public CreatureState CurrentState => currentState;
     public bool IsChasing => currentState == CreatureState.Chasing;
     public bool IsCalm => currentState == CreatureState.Calm;
+
+    private void Awake()
+    {
+        if (navMeshAgent == null)
+        {
+            navMeshAgent = GetComponent<NavMeshAgent>();
+        }
+
+        if (animator == null)
+        {
+            animator = GetComponent<Animator>();
+        }
+
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+        }
+
+        // Настраиваем NavMeshAgent
+        if (navMeshAgent != null)
+        {
+            navMeshAgent.stoppingDistance = stopDistance;
+            navMeshAgent.autoBraking = true;
+        }
+    }
 
     private void Start()
     {
@@ -81,42 +105,60 @@ public class CreatureController : MonoBehaviour
 
     private void UpdateCalmState()
     {
-
+        // В спокойном состоянии останавливаем NavMeshAgent
+        if (navMeshAgent != null && navMeshAgent.isActiveAndEnabled && navMeshAgent.isOnNavMesh)
+        {
+            if (navMeshAgent.hasPath)
+            {
+                navMeshAgent.ResetPath();
+            }
+        }
     }
 
     private void UpdateChasingState()
     {
-        if (playerTarget == null) return;
+        if (playerTarget == null || navMeshAgent == null || !navMeshAgent.isActiveAndEnabled) return;
 
-        Vector3 toPlayer = playerTarget.position - transform.position;
-        Vector3 flatToPlayer = Vector3.ProjectOnPlane(toPlayer, Vector3.up);
-        float distanceToPlayer = flatToPlayer.magnitude;
-
-        // Если слишком близко к игроку, останавливаемся
-        if (distanceToPlayer <= stopDistance)
+        if (!navMeshAgent.isOnNavMesh)
         {
-            FaceDirection(flatToPlayer.normalized);
             return;
         }
 
-        // Движемся к игроку
-        Vector3 moveDirection = flatToPlayer.normalized;
-        Vector3 movement = moveDirection * chaseSpeed;
-        Vector3 motion = movement + Vector3.up * verticalVelocity;
-
-        characterController.Move(motion * Time.deltaTime);
-        FaceDirection(moveDirection);
-
-        lastKnownPlayerPosition = playerTarget.position;
+        // Обновляем путь к игроку с интервалом
+        pathUpdateTimer += Time.deltaTime;
+        if (pathUpdateTimer >= pathUpdateInterval)
+        {
+            pathUpdateTimer = 0f;
+            UpdatePathToPlayer();
+        }
     }
 
-    private void FaceDirection(Vector3 direction)
+    private void UpdatePathToPlayer()
     {
-        if (direction.sqrMagnitude < 0.0001f) return;
+        if (playerTarget == null || navMeshAgent == null || !navMeshAgent.isOnNavMesh) return;
 
-        float rotateSpeed = currentState == CreatureState.Chasing ? chaseRotateSpeed : calmRotateSpeed;
-        Quaternion targetRotation = Quaternion.LookRotation(direction, Vector3.up);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotateSpeed * Time.deltaTime);
+        Vector3 targetPosition = playerTarget.position;
+        
+        // Проверяем, изменилась ли позиция игрока
+        if (Vector3.Distance(targetPosition, lastKnownPlayerPosition) > 0.1f)
+        {
+            NavMeshHit hit;
+            // Проверяем, доступна ли позиция игрока на NavMesh
+            if (NavMesh.SamplePosition(targetPosition, out hit, 5f, NavMesh.AllAreas))
+            {
+                navMeshAgent.SetDestination(hit.position);
+                lastKnownPlayerPosition = targetPosition;
+            }
+            else
+            {
+                // Если позиция игрока недоступна, пытаемся найти ближайшую точку на NavMesh
+                if (NavMesh.FindClosestEdge(targetPosition, out hit, NavMesh.AllAreas))
+                {
+                    navMeshAgent.SetDestination(hit.position);
+                    lastKnownPlayerPosition = hit.position;
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -162,20 +204,36 @@ public class CreatureController : MonoBehaviour
 
     private void OnStateChanged(CreatureState previousState, CreatureState newState)
     {
-        // Останавливаем движение при смене состояния
-        verticalVelocity = 0f;
+        if (navMeshAgent == null || !navMeshAgent.isActiveAndEnabled) return;
 
-        // Обновляем анимации
-        bool isChasing = newState == CreatureState.Chasing;
+        // Настраиваем параметры NavMeshAgent в зависимости от состояния
+        switch (newState)
+        {
+            case CreatureState.Calm:
+                navMeshAgent.speed = calmMoveSpeed;
+                navMeshAgent.angularSpeed = calmRotateSpeed;
+                // Останавливаем движение
+                if (navMeshAgent.isOnNavMesh && navMeshAgent.hasPath)
+                {
+                    navMeshAgent.ResetPath();
+                }
+                break;
 
-        // Проигрываем звуки
-        PlayStateChangeSound(newState);
-
+            case CreatureState.Chasing:
+                navMeshAgent.speed = chaseSpeed;
+                navMeshAgent.angularSpeed = chaseRotateSpeed;
+                // Начинаем преследование
+                if (playerTarget != null)
+                {
+                    UpdatePathToPlayer();
+                }
+                break;
+        }
         // Обновляем зацикленный звук движения
         UpdateMovementSound(newState);
     }
 
-    private void PlayStateChangeSound(CreatureState state)
+    public void PlayStateChangeSound(CreatureState state)
     {
         if (audioSource == null) return;
 
@@ -250,6 +308,17 @@ public class CreatureController : MonoBehaviour
             Gizmos.DrawWireSphere(transform.position, stopDistance);
         }
 
+        // Рисуем путь NavMeshAgent
+        if (navMeshAgent != null && navMeshAgent.hasPath)
+        {
+            Gizmos.color = Color.cyan;
+            Vector3[] corners = navMeshAgent.path.corners;
+            for (int i = 0; i < corners.Length - 1; i++)
+            {
+                Gizmos.DrawLine(corners[i], corners[i + 1]);
+            }
+        }
+
         // Рисуем линию к игроку
         if (playerTarget != null && currentState == CreatureState.Chasing)
         {
@@ -258,4 +327,3 @@ public class CreatureController : MonoBehaviour
         }
     }
 }
-
