@@ -1,9 +1,6 @@
 using System.Collections;
 using UnityEngine;
 
-/// <summary>
-/// Controller for coffee machine that accepts cups and makes coffee
-/// </summary>
 public class CoffeeMachineController : BaseItemReceiverController
 {
     private const float MIN_PLACEMENT_DELAY = 0f;
@@ -13,7 +10,7 @@ public class CoffeeMachineController : BaseItemReceiverController
     [SerializeField] private bool enablePhysicsOnPlace = true;
     [SerializeField] private bool enableCollidersOnPlace = true;
     [SerializeField] private float placementDelay = 0f;
-
+    
     [Header("Cooking")]
     [SerializeField] private float cookingTime = 3f;
 
@@ -27,19 +24,6 @@ public class CoffeeMachineController : BaseItemReceiverController
 
     private Animator currentCupAnimator;
     private bool isCooking = false;
-
-    private void Awake()
-    {
-        if (outline == null)
-        {
-            outline = GetComponent<Outline>();
-        }
-
-        if (audioSource == null)
-        {
-            audioSource = GetComponent<AudioSource>();
-        }
-    }
 
     public override void Interact(GameObject item)
     {

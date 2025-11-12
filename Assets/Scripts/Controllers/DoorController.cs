@@ -11,6 +11,7 @@ public class DoorController : MonoBehaviour, IInteractable
 
     [Header("Main")]
     [SerializeField] private bool canInteract = true;
+    [SerializeField] private bool completeCurrentQuest = false;
 
     [Header("Door Settings")]
     [SerializeField] private bool startsLocked = false;
@@ -112,6 +113,11 @@ public class DoorController : MonoBehaviour, IInteractable
     private void SetOpenState(bool open, bool pairSync = false)
     {
         isOpen = open;
+
+        if (completeCurrentQuest)
+        {
+            QuestManager.Instance.CompleteCurrentQuest();
+        }
 
         if (doorPivot == null) return;
 

@@ -35,4 +35,9 @@ public class Item : MonoBehaviour
     {
         canBeDropped = value;
     }
+
+    public void SetCompleteCurrentQuest(bool value)
+    {
+        completeCurrentQuest = value;
+    }
 }

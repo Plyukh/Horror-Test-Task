@@ -18,6 +18,7 @@ public class StepSoundTrigger : MonoBehaviour
         {
             if (other.gameObject.GetComponent<PlayerMovementController>())
             {
+                soundPlayed = true;
                 PlaySound();
             }
         }
