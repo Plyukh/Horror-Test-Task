@@ -48,6 +48,7 @@ public class CreatureController : MonoBehaviour
     [SerializeField] private AudioClip movementLoopClip;
 
     [Header("Player Catch Settings")]
+    [SerializeField] private AudioSource chasingAudioSource;
     [Tooltip("Камера игрока для управления")]
     [SerializeField] private Camera playerCamera;
     [Tooltip("Точка позиции, к которой будет перемещаться камера при поимке игрока")]
@@ -221,6 +222,7 @@ public class CreatureController : MonoBehaviour
     {
         hasCaughtPlayer = true;
         deathWindow.SetActive(true);
+        chasingAudioSource.Stop();
 
         // Останавливаем существо
         if (navMeshAgent != null && navMeshAgent.isOnNavMesh)
@@ -436,6 +438,9 @@ public class CreatureController : MonoBehaviour
                 audioSource.clip = movementLoopClip;
                 audioSource.loop = true;
                 audioSource.Play();
+
+                chasingAudioSource.loop = true;
+                chasingAudioSource.Play();
             }
         }
         else
