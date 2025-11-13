@@ -162,10 +162,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private void OnApplicationFocus(bool hasFocus)
     {
-        if (!hasFocus)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
+        // Не управляем курсором при потере фокуса - это делает CursorManager
+        // Оставляем пустым, чтобы курсор управлялся только через CursorManager
     }
 }

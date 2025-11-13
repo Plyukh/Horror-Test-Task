@@ -34,6 +34,7 @@ public class DoorController : MonoBehaviour, IInteractable
     [SerializeField] private AudioClip closeClip;
     [SerializeField] private AudioClip lockedClip;
 
+    private bool _completeCurrentQuest;
     private bool isLocked;
     private bool isOpen;
     private Coroutine rotateCoroutine;
@@ -104,6 +105,11 @@ public class DoorController : MonoBehaviour, IInteractable
     {
         if (isOpen)
         {
+            if (completeCurrentQuest)
+            {
+                completeCurrentQuest = false;
+                _completeCurrentQuest = true;
+            }
             SetOpenState(false);
         }
     }
@@ -114,9 +120,17 @@ public class DoorController : MonoBehaviour, IInteractable
     {
         isOpen = open;
 
-        if (completeCurrentQuest)
+        if (_completeCurrentQuest)
         {
-            QuestManager.Instance.CompleteCurrentQuest();
+            completeCurrentQuest = true;
+            _completeCurrentQuest = false;
+        }
+        else
+        {
+            if (completeCurrentQuest)
+            {
+                QuestManager.Instance.CompleteCurrentQuest();
+            }
         }
 
         if (doorPivot == null) return;

@@ -145,9 +145,11 @@ public class CreatureController : MonoBehaviour
 
     public void SetBasePosition()
     {
+        gameObject.SetActive(false);
         transform.position = basePosition.transform.position;
         transform.rotation = basePosition.transform.rotation;
         hasCaughtPlayer = false;
+        gameObject.SetActive(true);
     }
 
     private void UpdateState()
@@ -438,9 +440,6 @@ public class CreatureController : MonoBehaviour
                 audioSource.clip = movementLoopClip;
                 audioSource.loop = true;
                 audioSource.Play();
-
-                chasingAudioSource.loop = true;
-                chasingAudioSource.Play();
             }
         }
         else

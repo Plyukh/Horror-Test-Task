@@ -7494,6 +7494,18 @@ MonoBehaviour:
             m_StringArgument: Chasing
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 7341576699732848540}
+          m_TargetAssemblyTypeName: CarController, Assembly-CSharp
+          m_MethodName: SetCanIteract
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 10
+            m_StringArgument: Chasing
+            m_BoolArgument: 1
+          m_CallState: 2
         - m_Target: {fileID: 7341576699732848539}
           m_TargetAssemblyTypeName: Outline, Assembly-CSharp
           m_MethodName: set_OutlineWidth
@@ -7506,9 +7518,9 @@ MonoBehaviour:
             m_StringArgument: Chasing
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 7341576699732848540}
-          m_TargetAssemblyTypeName: CarController, Assembly-CSharp
-          m_MethodName: SetCanIteract
+        - m_Target: {fileID: 287622983}
+          m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+          m_MethodName: set_loop
           m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -7517,6 +7529,18 @@ MonoBehaviour:
             m_FloatArgument: 10
             m_StringArgument: Chasing
             m_BoolArgument: 1
+          m_CallState: 2
+        - m_Target: {fileID: 287622983}
+          m_TargetAssemblyTypeName: UnityEngine.AudioSource, UnityEngine
+          m_MethodName: Play
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 10
+            m_StringArgument: Chasing
+            m_BoolArgument: 0
           m_CallState: 2
   - description: "\u2022 \u0411\u0435\u0433\u0438!"
     onComplete:
@@ -11345,6 +11369,52 @@ PrefabInstance:
       addedObject: {fileID: 1919861186}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e509d0c72ad02184ca5f101c286edef7, type: 3}
+--- !u!1 &671743504
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 671743505}
+  - component: {fileID: 671743506}
+  m_Layer: 0
+  m_Name: Cursor Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &671743505
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 671743504}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2013904698}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &671743506
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 671743504}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c1ee1971bd20f947a268113e24ff30b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathWindow: {fileID: 1916127044}
+  winWindow: {fileID: 1284884902}
 --- !u!1 &673949551
 GameObject:
   m_ObjectHideFlags: 0
@@ -24157,13 +24227,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 671743506}
+        m_TargetAssemblyTypeName: CursorManager, Assembly-CSharp
+        m_MethodName: Quit
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -34392,6 +34462,7 @@ Transform:
   m_Children:
   - {fileID: 378372871}
   - {fileID: 380027486}
+  - {fileID: 671743505}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2018207584
@@ -45494,7 +45565,7 @@ MonoBehaviour:
   navMeshAgent: {fileID: 7506053670097152597}
   animator: {fileID: 7506053670097152592}
   audioSource: {fileID: 7506053670097152593}
-  initialState: 1
+  initialState: 0
   basePosition: {fileID: 499178965}
   calmMoveSpeed: 1
   calmRotateSpeed: 90
@@ -45506,7 +45577,7 @@ MonoBehaviour:
   chaseStartClip: {fileID: 8300000, guid: 0cb44f7c8b2e68546b3d1ccb76c43ab7, type: 3}
   calmClip: {fileID: 0}
   movementLoopClip: {fileID: 8300000, guid: a700421bec1de2b47b5654aae489b4e2, type: 3}
-  chasingAudioSource: {fileID: 0}
+  chasingAudioSource: {fileID: 287622983}
   playerCamera: {fileID: 330585545}
   cameraPositionPoint: {fileID: 137469080}
   cameraLookAtPoint: {fileID: 2035394704}
