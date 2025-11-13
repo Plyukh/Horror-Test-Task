@@ -8,6 +8,9 @@ public class PlayerMovementController : MonoBehaviour
     private const float MOVEMENT_DEADZONE = 0.0001f;
     private const float GROUNDED_VELOCITY_Y = -2f;
 
+    [Header("Base")]
+    [SerializeField] private GameObject basePosition;
+
     [Header("Movement")]
     [SerializeField] private float walkSpeed = 3f;
     [SerializeField] private float runSpeed = 6f;
@@ -23,6 +26,40 @@ public class PlayerMovementController : MonoBehaviour
     private CharacterController characterController;
     private float pitch = 0f;
     private Vector3 velocity;
+    private bool isMovementEnabled = true;
+    private bool isMouseLookEnabled = true;
+
+    public bool IsMovementEnabled => isMovementEnabled;
+    public bool IsMouseLookEnabled => isMouseLookEnabled;
+
+    public void SetMovementEnabled(bool enabled)
+    {
+        isMovementEnabled = enabled;
+    }
+
+    public void SetMouseLookEnabled(bool enabled)
+    {
+        isMouseLookEnabled = enabled;
+    }
+
+    public void SetInputEnabled(bool enabled)
+    {
+        isMovementEnabled = enabled;
+        isMouseLookEnabled = enabled;
+    }
+
+    public void SetBasePosition()
+    {
+        Camera.main.transform.localRotation = Quaternion.identity;
+        Camera.main.transform.localPosition = Vector3.zero;
+        gameObject.SetActive(false);
+        SetInputEnabled(true);
+
+        transform.position = basePosition.transform.position;
+        transform.rotation = basePosition.transform.rotation;
+
+        gameObject.SetActive(true);
+    }
 
     private void Start()
     {
@@ -62,7 +99,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private void HandleMouseLook()
     {
-        if (headPivot == null) return;
+        if (headPivot == null || !isMouseLookEnabled) return;
 
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
@@ -78,7 +115,7 @@ public class PlayerMovementController : MonoBehaviour
 
     private void HandleMovement()
     {
-        if (characterController == null) return;
+        if (characterController == null || !isMovementEnabled) return;
 
         Vector3 movement = CalculateMovement();
         ApplyGravity();
@@ -87,6 +124,8 @@ public class PlayerMovementController : MonoBehaviour
 
     private Vector3 CalculateMovement()
     {
+        if (!isMovementEnabled) return Vector3.zero;
+
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 

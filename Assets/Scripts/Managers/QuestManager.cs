@@ -113,6 +113,13 @@ public class QuestManager : MonoBehaviour
         CreateNewQuestUI();
     }
 
+    public void SelectQuest(int index)
+    {
+        currentIndex = index;
+        currentTextAnimator.SetTrigger("Complete Quest");
+        CreateNewQuestUI();
+    }
+
     private void CreateNewQuestUI()
     {
         if (uiTextPrefab == null || uiTextPrefabParent == null || questInfoText == null)

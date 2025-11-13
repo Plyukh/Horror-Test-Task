@@ -19,6 +19,7 @@ public class CreatureController : MonoBehaviour
     [Header("State")]
     [Tooltip("Начальное состояние существа")]
     [SerializeField] private CreatureState initialState = CreatureState.Calm;
+    [SerializeField] private GameObject basePosition;
 
     [Header("Calm State Settings")]
     [Tooltip("Скорость движения в спокойном состоянии")]
@@ -46,9 +47,31 @@ public class CreatureController : MonoBehaviour
     [Tooltip("Звук дыхания/движения (зацикленный)")]
     [SerializeField] private AudioClip movementLoopClip;
 
+    [Header("Player Catch Settings")]
+    [Tooltip("Камера игрока для управления")]
+    [SerializeField] private Camera playerCamera;
+    [Tooltip("Точка позиции, к которой будет перемещаться камера при поимке игрока")]
+    [SerializeField] private Transform cameraPositionPoint;
+    [Tooltip("Точка, в которую будет смотреть камера при поимке игрока")]
+    [SerializeField] private Transform cameraLookAtPoint;
+    [Tooltip("Значение FOV для зума камеры при поимке")]
+    [SerializeField] private float catchCameraFOV = 30f;
+    [Tooltip("Скорость перехода камеры к точке взгляда")]
+    [SerializeField] private float cameraTransitionSpeed = 2f;
+    [Tooltip("Имя bool параметра в аниматоре, который нужно отключить при поимке")]
+    [SerializeField] private string animatorBoolToDisable = "Chasing";
+    [Tooltip("Компонент управления игроком для отключения")]
+    [SerializeField] private PlayerMovementController playerMovementController;
+
+    [Header("UI")]
+    [SerializeField] private GameObject deathWindow;
+
     private CreatureState currentState;
     private Vector3 lastKnownPlayerPosition;
     private float pathUpdateTimer = 0f;
+    private bool hasCaughtPlayer = false;
+    private float originalCameraFOV;
+    private Coroutine cameraTransitionCoroutine;
 
     // Public API
     public CreatureState CurrentState => currentState;
@@ -78,6 +101,35 @@ public class CreatureController : MonoBehaviour
             navMeshAgent.stoppingDistance = stopDistance;
             navMeshAgent.autoBraking = true;
         }
+
+        // Ищем камеру, если не назначена
+        if (playerCamera == null)
+        {
+            playerCamera = Camera.main;
+            if (playerCamera == null)
+            {
+                playerCamera = FindFirstObjectByType<Camera>();
+            }
+        }
+
+        // Сохраняем оригинальный FOV камеры
+        if (playerCamera != null)
+        {
+            originalCameraFOV = playerCamera.fieldOfView;
+        }
+
+        // Ищем PlayerMovementController, если не назначен
+        if (playerMovementController == null)
+        {
+            if (playerTarget != null)
+            {
+                playerMovementController = playerTarget.GetComponent<PlayerMovementController>();
+            }
+            if (playerMovementController == null)
+            {
+                playerMovementController = FindFirstObjectByType<PlayerMovementController>();
+            }
+        }
     }
 
     private void Start()
@@ -88,6 +140,13 @@ public class CreatureController : MonoBehaviour
     private void Update()
     {
         UpdateState();
+    }
+
+    public void SetBasePosition()
+    {
+        transform.position = basePosition.transform.position;
+        transform.rotation = basePosition.transform.rotation;
+        hasCaughtPlayer = false;
     }
 
     private void UpdateState()
@@ -124,12 +183,124 @@ public class CreatureController : MonoBehaviour
             return;
         }
 
+        // Проверяем, догнали ли мы игрока
+        if (!hasCaughtPlayer && HasReachedPlayer())
+        {
+            OnPlayerCaught();
+            return;
+        }
+
+        // Если уже поймали игрока, не обновляем путь
+        if (hasCaughtPlayer) return;
+
         // Обновляем путь к игроку с интервалом
         pathUpdateTimer += Time.deltaTime;
         if (pathUpdateTimer >= pathUpdateInterval)
         {
             pathUpdateTimer = 0f;
             UpdatePathToPlayer();
+        }
+    }
+
+    private bool HasReachedPlayer()
+    {
+        if (navMeshAgent == null || playerTarget == null) return false;
+
+        // Проверяем, достиг ли NavMeshAgent цели
+        if (navMeshAgent.remainingDistance <= stopDistance && navMeshAgent.remainingDistance > 0f)
+        {
+            return true;
+        }
+
+        // Дополнительная проверка по прямой дистанции
+        float distanceToPlayer = Vector3.Distance(transform.position, playerTarget.position);
+        return distanceToPlayer <= stopDistance;
+    }
+
+    private void OnPlayerCaught()
+    {
+        hasCaughtPlayer = true;
+        deathWindow.SetActive(true);
+
+        // Останавливаем существо
+        if (navMeshAgent != null && navMeshAgent.isOnNavMesh)
+        {
+            navMeshAgent.ResetPath();
+        }
+
+        // Отключаем bool в аниматоре
+        if (animator != null && !string.IsNullOrEmpty(animatorBoolToDisable))
+        {
+            animator.SetBool(animatorBoolToDisable, false);
+            
+        }
+
+        // Отключаем управление игроком
+        if (playerMovementController != null)
+        {
+            playerMovementController.SetInputEnabled(false);
+        }
+
+        // Запускаем переход камеры
+        if (playerCamera != null && cameraPositionPoint != null && cameraLookAtPoint != null)
+        {
+            if (cameraTransitionCoroutine != null)
+            {
+                StopCoroutine(cameraTransitionCoroutine);
+            }
+            cameraTransitionCoroutine = StartCoroutine(TransitionCameraToPoint());
+        }
+    }
+
+    private System.Collections.IEnumerator TransitionCameraToPoint()
+    {
+        if (playerCamera == null || cameraPositionPoint == null || cameraLookAtPoint == null) yield break;
+
+        Vector3 startPosition = playerCamera.transform.position;
+        Quaternion startRotation = playerCamera.transform.rotation;
+        float startFOV = playerCamera.fieldOfView;
+
+        float elapsedTime = 0f;
+
+        // Фаза перехода
+        while (elapsedTime < 1f / cameraTransitionSpeed)
+        {
+            elapsedTime += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsedTime * cameraTransitionSpeed);
+
+            // Целевая позиция камеры (обновляется каждый кадр, если точка движется)
+            Vector3 targetPosition = cameraPositionPoint.position;
+
+            // Вычисляем целевой поворот камеры (смотреть на точку из текущей позиции)
+            Vector3 directionToPoint = (cameraLookAtPoint.position - targetPosition).normalized;
+            Quaternion targetRotation = Quaternion.LookRotation(directionToPoint);
+
+            // Плавно перемещаем камеру к позиции
+            playerCamera.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+
+            // Плавно поворачиваем камеру к точке
+            playerCamera.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, t);
+
+            // Плавно зумим камеру
+            playerCamera.fieldOfView = Mathf.Lerp(startFOV, catchCameraFOV, t);
+
+            yield return null;
+        }
+
+        // Фаза постоянного обновления позиции камеры
+        while (hasCaughtPlayer)
+        {
+            // Обновляем позицию камеры каждый кадр
+            playerCamera.transform.position = cameraPositionPoint.position;
+
+            // Вычисляем поворот камеры (смотреть на точку из текущей позиции)
+            Vector3 directionToPoint = (cameraLookAtPoint.position - cameraPositionPoint.position).normalized;
+            playerCamera.transform.rotation = Quaternion.LookRotation(directionToPoint);
+
+            // Поддерживаем FOV
+            playerCamera.fieldOfView = catchCameraFOV;
+
+            yield return null;
         }
     }
 
